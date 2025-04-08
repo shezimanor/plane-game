@@ -6,7 +6,7 @@ export class Bullet extends Component {
   @property(CCInteger)
   public speed: number = 500;
 
-  private _bgHeight: number = 446;
+  private _bgHeight: number = 852;
 
   start() {}
 
