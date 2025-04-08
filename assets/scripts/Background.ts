@@ -4,9 +4,9 @@ const { ccclass, property } = _decorator;
 @ccclass('Background')
 export class Background extends Component {
   @property(Node)
-  private bgNode1: Node = null;
+  public bgNode1: Node = null;
   @property(Node)
-  private bgNode2: Node = null;
+  public bgNode2: Node = null;
 
   @property(CCInteger)
   private _speed: number = 200;
