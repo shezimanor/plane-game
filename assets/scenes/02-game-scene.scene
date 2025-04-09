@@ -23,7 +23,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 28
+      "__id__": 26
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -54,7 +54,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 29
+      "__id__": 27
     },
     "_id": "93adfb25-6bd8-4f4c-ae18-4b10675c6db4"
   },
@@ -80,19 +80,19 @@
     "_active": true,
     "_components": [
       {
+        "__id__": 23
+      },
+      {
+        "__id__": 24
+      },
+      {
         "__id__": 25
-      },
-      {
-        "__id__": 26
-      },
-      {
-        "__id__": 27
       }
     ],
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 240.00000000000003,
+      "x": 240,
       "y": 425.00000000000006,
       "z": 0
     },
@@ -538,18 +538,15 @@
       },
       {
         "__id__": 19
-      },
-      {
-        "__id__": 21
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 23
+        "__id__": 21
       },
       {
-        "__id__": 24
+        "__id__": 22
       }
     ],
     "_prefab": null,
@@ -788,73 +785,6 @@
     "_id": "86m5wxTMxMg7SKpRemFsRJ"
   },
   {
-    "__type__": "cc.Node",
-    "_name": "BulletShootPoint",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "_parent": {
-      "__id__": 14
-    },
-    "_children": [],
-    "_active": true,
-    "_components": [
-      {
-        "__id__": 22
-      }
-    ],
-    "_prefab": null,
-    "_lpos": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 53,
-      "z": 0
-    },
-    "_lrot": {
-      "__type__": "cc.Quat",
-      "x": 0,
-      "y": 0,
-      "z": 0,
-      "w": 1
-    },
-    "_lscale": {
-      "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
-      "z": 1
-    },
-    "_mobility": 0,
-    "_layer": 33554432,
-    "_euler": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_id": "2afAlTmSxAvqa19Ixjpi+o"
-  },
-  {
-    "__type__": "cc.UITransform",
-    "_name": "",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "node": {
-      "__id__": 21
-    },
-    "_enabled": true,
-    "__prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 20,
-      "height": 20
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_id": "92AmsZFcpBZb4JguqosLxO"
-  },
-  {
     "__type__": "cc.UITransform",
     "_name": "",
     "_objFlags": 0,
@@ -886,14 +816,15 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "bulletShootPoint": {
-      "__id__": 21
-    },
     "bulletParent": {
       "__id__": 19
     },
     "bullet01Prefab": {
       "__uuid__": "20b5c37f-3bae-48b4-a1d8-2cf22c9e9180",
+      "__expectedType__": "cc.Prefab"
+    },
+    "bullet02Prefab": {
+      "__uuid__": "a9667cf6-52f1-4797-89fa-d1c00c81f53f",
       "__expectedType__": "cc.Prefab"
     },
     "shootRate": 0.3,
@@ -911,7 +842,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 480.00000000000006,
+      "width": 480,
       "height": 850
     },
     "_anchorPoint": {
@@ -978,28 +909,28 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 30
+      "__id__": 28
     },
     "shadows": {
-      "__id__": 31
+      "__id__": 29
     },
     "_skybox": {
-      "__id__": 32
+      "__id__": 30
     },
     "fog": {
-      "__id__": 33
+      "__id__": 31
     },
     "octree": {
-      "__id__": 34
+      "__id__": 32
     },
     "skin": {
-      "__id__": 35
+      "__id__": 33
     },
     "lightProbeInfo": {
-      "__id__": 36
+      "__id__": 34
     },
     "postSettings": {
-      "__id__": 37
+      "__id__": 35
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

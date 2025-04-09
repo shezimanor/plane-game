@@ -7,13 +7,16 @@ export class Bullet extends Component {
   public speed: number = 500;
 
   private _bgHeight: number = 852;
+  private _initWorldPositionX: number = 0;
 
-  start() {}
+  start() {
+    this._initWorldPositionX = this.node.worldPosition.x;
+  }
 
   update(deltaTime: number) {
-    const position = this.node.position;
-    this.node.setPosition(
-      position.x,
+    const position = this.node.worldPosition;
+    this.node.setWorldPosition(
+      this._initWorldPositionX,
       position.y + this.speed * deltaTime,
       position.z
     );
