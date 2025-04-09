@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.AnimationClip",
-    "_name": "Enemy1Hit",
+    "_name": "Enemy2Hit",
     "_objFlags": 0,
     "__editorExtras__": {
       "embeddedPlayerGroups": []
@@ -66,11 +66,11 @@
     ],
     "_values": [
       {
-        "__uuid__": "4e617f77-8a6b-45e6-bd9b-783b68acd4e1@fee4f",
+        "__uuid__": "4e617f77-8a6b-45e6-bd9b-783b68acd4e1@8fb0f",
         "__expectedType__": "cc.SpriteFrame"
       },
       {
-        "__uuid__": "4e617f77-8a6b-45e6-bd9b-783b68acd4e1@eb09c",
+        "__uuid__": "4e617f77-8a6b-45e6-bd9b-783b68acd4e1@a4f56",
         "__expectedType__": "cc.SpriteFrame"
       }
     ]

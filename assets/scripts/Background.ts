@@ -7,9 +7,8 @@ export class Background extends Component {
   public bgNode1: Node = null;
   @property(Node)
   public bgNode2: Node = null;
-
   @property(CCInteger)
-  private _speed: number = 200;
+  public speed: number = 120;
 
   private _height: number = 0;
 
@@ -22,12 +21,12 @@ export class Background extends Component {
     let position2 = this.bgNode2.position;
     this.bgNode1.setPosition(
       position1.x,
-      position1.y - this._speed * deltaTime,
+      position1.y - this.speed * deltaTime,
       position1.z
     );
     this.bgNode2.setPosition(
       position2.x,
-      position2.y - this._speed * deltaTime,
+      position2.y - this.speed * deltaTime,
       position2.z
     );
     let currentPosition1 = this.bgNode1.position;

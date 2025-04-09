@@ -36,8 +36,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -189.161,
-      "y": 480,
+      "x": 0,
+      "y": 0,
       "z": 0
     },
     "_lrot": {
@@ -89,7 +89,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 80.584,
+      "x": 0,
       "y": 0,
       "z": 0
     },
@@ -252,8 +252,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 51,
-      "height": 39
+      "width": 69,
+      "height": 89
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -297,6 +297,7 @@
       "__id__": 0
     },
     "fileId": "c0Yu0odE5JNYwQEIdXEuJ9",
+    "instance": null,
     "targetOverrides": null
   }
 ]
