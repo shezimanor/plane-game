@@ -16,11 +16,7 @@ export class Enemy extends Component {
   @property(CCInteger)
   public speed: number = 200;
 
-  start() {
-    this.scheduleOnce(() => {
-      this.destroyAnimation.play();
-    }, 1);
-  }
+  start() {}
 
   update(deltaTime: number) {
     const position = this.node.position;
