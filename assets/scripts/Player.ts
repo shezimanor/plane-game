@@ -9,13 +9,14 @@ import {
   math,
   Node,
   Prefab,
-  v3
+  v3,
+  Vec3
 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Player')
 export class Player extends Component {
-  // 子彈發射點(純定位用)
+  // 子彈發射點(純定位用，教學的寫法，但我覺得沒必要？先保留)
   @property(Node)
   public bulletShootPoint: Node = null;
   @property(Node)
@@ -30,6 +31,8 @@ export class Player extends Component {
   // 移動邊界範圍
   public borderX: number = 230;
   public borderY: number = 380;
+  public tempVec3: Vec3 = v3(0, 0, 0);
+  public bulletInitVec3: Vec3 = v3(0, 0, 0);
 
   protected onLoad(): void {
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -51,7 +54,7 @@ export class Player extends Component {
 
   onTouchMove(event: EventTouch) {
     const position = this.node.position;
-    let targetPosition = v3(
+    let targetPosition = this.tempVec3.set(
       math.clamp(position.x + event.getDeltaX(), -this.borderX, this.borderX),
       math.clamp(position.y + event.getDeltaY(), -this.borderY, this.borderY),
       position.z
@@ -62,6 +65,8 @@ export class Player extends Component {
   shootBullet01() {
     const bullet01 = instantiate(this.bullet01Prefab);
     bullet01.setParent(this.bulletParent);
-    bullet01.setWorldPosition(this.bulletShootPoint.worldPosition);
+    bullet01.setPosition(this.bulletInitVec3);
+    // 教學的寫法：但我覺得沒必要？先保留
+    // bullet01.setWorldPosition(this.bulletShootPoint.worldPosition);
   }
 }
