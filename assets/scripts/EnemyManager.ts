@@ -77,44 +77,23 @@ export class EnemyManager extends Component {
   }
 
   spawnEnemy00() {
-    const enemy = this.enemyPool_zero.getEnemy();
-    // 設定位置
-    enemy.setPosition(
-      math.randomRangeInt(
-        -this.enemy00Coordinate.x,
-        this.enemy00Coordinate.x + 1
-      ),
-      this.enemy00Coordinate.y,
-      0
-    );
-    // 設定父節點
-    enemy.setParent(this.node);
+    this.spawnEnemy(this.enemyPool_zero, this.enemy00Coordinate);
   }
 
   spawnEnemy01() {
-    const enemy = this.enemyPool_one.getEnemy();
-    // 設定位置
-    enemy.setPosition(
-      math.randomRangeInt(
-        -this.enemy01Coordinate.x,
-        this.enemy01Coordinate.x + 1
-      ),
-      this.enemy01Coordinate.y,
-      0
-    );
-    // 設定父節點
-    enemy.setParent(this.node);
+    this.spawnEnemy(this.enemyPool_one, this.enemy01Coordinate);
   }
 
   spawnEnemy02() {
-    const enemy = this.enemyPool_two.getEnemy();
+    this.spawnEnemy(this.enemyPool_two, this.enemy02Coordinate);
+  }
+
+  spawnEnemy(enemyPool: EnemyPool, enemyCoordinate: EnemyCoordinate) {
+    const enemy = enemyPool.getEnemy();
     // 設定位置
     enemy.setPosition(
-      math.randomRangeInt(
-        -this.enemy02Coordinate.x,
-        this.enemy02Coordinate.x + 1
-      ),
-      this.enemy02Coordinate.y,
+      math.randomRangeInt(-enemyCoordinate.x, enemyCoordinate.x + 1),
+      enemyCoordinate.y,
       0
     );
     // 設定父節點
