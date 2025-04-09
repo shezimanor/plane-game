@@ -44,6 +44,7 @@ export class Bullet extends Component {
     this._worldPositionY = this.node.worldPosition.y;
   }
 
+  // 設定子彈池的名稱
   setPoolName(name: string) {
     this.poolName = name;
   }
