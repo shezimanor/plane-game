@@ -1,13 +1,19 @@
-import { _decorator, CCInteger, Component, Node } from 'cc';
+import { _decorator, CCInteger, CCString, Component, Node } from 'cc';
 import { Player } from './Player';
 import { BulletPool } from './BulletPool';
 const { ccclass, property } = _decorator;
 @ccclass('Bullet')
 export class Bullet extends Component {
+  // 物件池名稱
+  @property(CCString)
+  public poolName: string = '';
+  // 速度
   @property(CCInteger)
   public speed: number = 500;
+  // 傷害值
+  @property(CCInteger)
+  public damage: number = 1;
 
-  public poolName: string = '';
   private _initWorldPositionX: number = 0;
   private _worldPositionY: number = 0;
   private _player: Player = null;
@@ -42,10 +48,5 @@ export class Bullet extends Component {
   setInitWorldPositionX() {
     this._initWorldPositionX = this.node.worldPosition.x;
     this._worldPositionY = this.node.worldPosition.y;
-  }
-
-  // 設定子彈池的名稱
-  setPoolName(name: string) {
-    this.poolName = name;
   }
 }

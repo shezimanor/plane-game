@@ -25,8 +25,6 @@ export class BulletPool {
     } else {
       // 如果沒有，就從 pool 中取出一個新的子彈
       const bullet = instantiate(this._prefab);
-      // 設定 poolName
-      bullet.getComponent(Bullet).setPoolName(this.poolName);
       // 回傳
       return bullet;
     }

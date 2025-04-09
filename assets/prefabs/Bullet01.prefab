@@ -153,6 +153,7 @@
     "__prefab": {
       "__id__": 7
     },
+    "poolName": "bulletPool_one",
     "speed": 500,
     "_id": ""
   },

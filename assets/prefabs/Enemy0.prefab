@@ -280,10 +280,11 @@
     "__prefab": {
       "__id__": 13
     },
-    "destroyAnimation": {
-      "__id__": 7
-    },
+    "destroyAnimationName": "Enemy0Destroy",
+    "hitAnimationName": "",
+    "poolName": "enemyPool_zero",
     "speed": 300,
+    "hp": 1,
     "_id": ""
   },
   {

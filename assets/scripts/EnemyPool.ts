@@ -25,8 +25,6 @@ export class EnemyPool {
     } else {
       // 如果沒有，就從 pool 中取出一個新的敵機
       const enemy = instantiate(this._prefab);
-      // 設定 poolName
-      enemy.getComponent(Enemy).setPoolName(this.poolName);
       // 回傳
       return enemy;
     }
