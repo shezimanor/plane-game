@@ -1,4 +1,11 @@
-import { _decorator, CCInteger, CCString, Component, Node } from 'cc';
+import {
+  _decorator,
+  CCInteger,
+  CCString,
+  Collider2D,
+  Component,
+  Node
+} from 'cc';
 import { Player } from './Player';
 import { BulletPool } from './BulletPool';
 const { ccclass, property } = _decorator;
@@ -14,16 +21,24 @@ export class Bullet extends Component {
   @property(CCInteger)
   public damage: number = 1;
 
+  public collider: Collider2D = null;
   private _initWorldPositionX: number = 0;
   private _worldPositionY: number = 0;
   private _player: Player = null;
   private _bgHeight: number = 852;
 
-  start() {
+  protected onLoad(): void {
     this._initWorldPositionX = this.node.worldPosition.x;
     this._worldPositionY = this.node.worldPosition.y;
     // 設定玩家實例
     this._player = this.node.parent.parent.getComponent(Player);
+    // 設定碰撞元件
+    this.collider = this.getComponent(Collider2D);
+  }
+
+  protected onEnable(): void {
+    // 子彈有子彈池做循環使用，所以 BulletPool.markAsInactive 會觸發 onEnable
+    this.reset();
   }
 
   update(deltaTime: number) {
@@ -33,14 +48,10 @@ export class Bullet extends Component {
       this._worldPositionY,
       0
     );
+
+    // 如果子彈超出邊界，就回收子彈
     if (this._worldPositionY > this._bgHeight) {
-      if (this._player && this._player[this.poolName] instanceof BulletPool) {
-        this._player[this.poolName].recycleBullet(this.node);
-        // this.node.removeFromParent();
-      } else {
-        console.error('BulletPool not found');
-        this.node.destroy();
-      }
+      this.stopAction();
     }
   }
 
@@ -48,5 +59,18 @@ export class Bullet extends Component {
   setInitWorldPositionX() {
     this._initWorldPositionX = this.node.worldPosition.x;
     this._worldPositionY = this.node.worldPosition.y;
+  }
+
+  stopAction() {
+    if (this._player && this._player[this.poolName] instanceof BulletPool) {
+      this._player[this.poolName].recycleBullet(this.node);
+    } else {
+      console.error('BulletPool not found');
+      this.node.destroy();
+    }
+  }
+
+  reset() {
+    if (this.collider) this.collider.enabled = true;
   }
 }

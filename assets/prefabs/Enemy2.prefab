@@ -285,7 +285,7 @@
     "hitAnimationName": "Enemy2Hit",
     "poolName": "enemyPool_two",
     "speed": 100,
-    "hp": 1,
+    "hp": 20,
     "_id": ""
   },
   {

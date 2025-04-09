@@ -155,6 +155,7 @@
     },
     "poolName": "bulletPool_two",
     "speed": 650,
+    "damage": 1,
     "_id": ""
   },
   {
