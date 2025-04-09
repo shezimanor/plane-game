@@ -1,6 +1,7 @@
 import {
   _decorator,
   CCFloat,
+  CCInteger,
   Component,
   EventTouch,
   Input,
@@ -12,6 +13,8 @@ import {
   v3,
   Vec3
 } from 'cc';
+import { BulletPool } from './BulletPool';
+import { Bullet } from './Bullet';
 const { ccclass, property } = _decorator;
 
 enum ShootType {
@@ -33,7 +36,11 @@ export class Player extends Component {
   // 子彈計時器
   public shootTimer: number = 0;
   // 子彈發射類型
+  @property(CCInteger)
   public shootType: ShootType = ShootType.TwoShoot;
+  // 子彈池
+  public bulletPool_one: BulletPool = null;
+  public bulletPool_two: BulletPool = null;
   // 移動邊界範圍
   public borderX: number = 230;
   public borderY: number = 380;
@@ -48,7 +55,11 @@ export class Player extends Component {
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
   }
 
-  start() {}
+  start() {
+    // 設定子彈池
+    this.bulletPool_one = new BulletPool(this.bullet01Prefab, 'bulletPool_one');
+    this.bulletPool_two = new BulletPool(this.bullet02Prefab, 'bulletPool_two');
+  }
 
   update(deltaTime: number) {
     this.shootTimer += deltaTime;
@@ -81,16 +92,25 @@ export class Player extends Component {
   }
 
   oneShoot() {
-    const bullet = instantiate(this.bullet01Prefab);
-    bullet.setParent(this.bulletParent);
+    const bullet = this.bulletPool_one.getBullet();
+    // 設定位置
     bullet.setPosition(this.bullet01InitVec3);
+    // 設定子彈的初始 x 座標，因為飛機會動，但子彈的 x 是固定的。
+    bullet.getComponent(Bullet).setInitWorldPositionX();
+    // 設定父節點
+    bullet.setParent(this.bulletParent);
   }
   twoShoot() {
-    const bulletLeft = instantiate(this.bullet02Prefab);
-    const bulletRight = instantiate(this.bullet02Prefab);
-    bulletLeft.setParent(this.bulletParent);
-    bulletRight.setParent(this.bulletParent);
+    const bulletLeft = this.bulletPool_two.getBullet();
+    const bulletRight = this.bulletPool_two.getBullet();
+    // 設定位置
     bulletLeft.setPosition(this.bullet02LeftInitVec3);
     bulletRight.setPosition(this.bullet02RightInitVec3);
+    // 設定子彈的初始 x 座標，因為飛機會動，但子彈的 x 是固定的。
+    bulletLeft.getComponent(Bullet).setInitWorldPositionX();
+    bulletRight.getComponent(Bullet).setInitWorldPositionX();
+    // 設定父節點
+    bulletLeft.setParent(this.bulletParent);
+    bulletRight.setParent(this.bulletParent);
   }
 }
