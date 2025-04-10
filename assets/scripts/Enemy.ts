@@ -38,6 +38,9 @@ export class Enemy extends Component {
   // 生命值
   @property(CCInteger)
   private hp: number = 1;
+  // 傷害值
+  @property(CCInteger)
+  public damage: number = 1;
 
   private _enemyManager: EnemyManager = null;
   private _bgHeight: number = 852;
@@ -122,7 +125,7 @@ export class Enemy extends Component {
     }
   }
 
-  // 碰撞開始
+  // 碰撞開始：目前有分組，只會和敵機產生碰撞
   onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D) {
     // console.log(selfCollider.name, otherCollider.name);
     const bullet = otherCollider.getComponent(Bullet);

@@ -1,20 +1,30 @@
 import {
   _decorator,
+  Animation,
+  AnimationState,
   CCFloat,
   CCInteger,
+  CCString,
+  Collider2D,
+  color,
+  Color,
   Component,
+  Contact2DType,
   EventTouch,
+  game,
   Input,
   input,
-  instantiate,
   math,
   Node,
   Prefab,
+  Sprite,
+  SpriteFrame,
   v3,
   Vec3
 } from 'cc';
 import { BulletPool } from './BulletPool';
 import { Bullet } from './Bullet';
+import { Enemy } from './Enemy';
 const { ccclass, property } = _decorator;
 
 enum ShootType {
@@ -24,20 +34,32 @@ enum ShootType {
 
 @ccclass('Player')
 export class Player extends Component {
+  // 子彈生成的節點
   @property(Node)
   public bulletParent: Node = null;
+  // 子彈一預製體
   @property(Prefab)
   public bullet01Prefab: Prefab = null;
+  // 子彈二預製體
   @property(Prefab)
   public bullet02Prefab: Prefab = null;
-  // 子彈發射速率
-  @property(CCFloat)
-  public shootRate: number = 0.3;
-  // 子彈計時器
-  public shootTimer: number = 0;
+  // 被擊毀動畫（死亡動畫）
+  @property(CCString)
+  private destroyAnimationName: string = '';
+  // 被擊中動畫（受傷動畫）
+  @property(CCString)
+  private hitAnimationName: string = '';
+  // 備注一下： Default Clip: PlayerIdle
   // 子彈發射類型
   @property(CCInteger)
   public shootType: ShootType = ShootType.TwoShoot;
+  // 子彈發射速率
+  @property(CCFloat)
+  public shootRate: number = 0.3;
+  // 生命值
+  @property(CCInteger)
+  public hp: number = 3;
+
   // 子彈池
   public bulletPool_one: BulletPool = null;
   public bulletPool_two: BulletPool = null;
@@ -50,21 +72,51 @@ export class Player extends Component {
   // 子彈二的雙發初始位置是飛機圖片的兩翼槍口位置（一樣是 bulletParent 的本地座標）
   public bullet02LeftInitVec3: Vec3 = v3(-22, -29.5, 0);
   public bullet02RightInitVec3: Vec3 = v3(22, -29.5, 0);
+  // 子彈計時器
+  private _shootTimer: number = 0;
+  // 碰撞器(Player 的碰撞群組為 DEFAULT)
+  // TODO: 後續再來考慮碰撞管理器統一管理碰撞
+  private _collider: Collider2D = null;
+  private _animation: Animation = null;
+  private _maxHp: number = 1;
+  private _body: Sprite = null;
+  private _spriteFrame: SpriteFrame = null;
+  // 無敵狀態（可以建立無敵時間計時器，但目前是直接使用被擊中的動畫時長）
+  private _isInvisible: boolean = false;
+  // 因為擊毀動畫播放會改變顏色 alpha，所以要還原
+  private _color: Color = color(255, 255, 255, 255);
 
   protected onLoad(): void {
-    input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
-  }
-
-  start() {
+    // 儲存初始數據（用來重置）一定要寫在這裡面，因為 onLoad 會在 onEnable 前執行
+    this._maxHp = this.hp;
+    this._body = this.node.getChildByName('Body').getComponent(Sprite);
+    this._spriteFrame = this._body ? this._body.spriteFrame : null;
+    // 設定動畫元件
+    this._animation = this._body ? this._body.getComponent(Animation) : null;
+    if (this._animation) {
+      this._animation.on(
+        Animation.EventType.FINISHED,
+        this.onAnimationFinished,
+        this
+      );
+    }
+    // 設定碰撞元件
+    this._collider = this.getComponent(Collider2D);
+    if (this._collider) {
+      this._collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+    }
     // 設定子彈池
     this.bulletPool_one = new BulletPool(this.bullet01Prefab, 'bulletPool_one');
     this.bulletPool_two = new BulletPool(this.bullet02Prefab, 'bulletPool_two');
+    // 設定觸控事件
+    input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
   }
 
   update(deltaTime: number) {
-    this.shootTimer += deltaTime;
-    if (this.shootTimer >= this.shootRate) {
-      this.shootTimer = 0;
+    // 自動發射
+    this._shootTimer += deltaTime;
+    if (this._shootTimer >= this.shootRate) {
+      this._shootTimer = 0;
       // 決定發射模式
       switch (this.shootType) {
         case ShootType.OneShoot:
@@ -78,7 +130,24 @@ export class Player extends Component {
   }
 
   protected onDestroy(): void {
+    // 註銷觸控事件
     input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+    // 註銷碰撞事件
+    if (this._collider) {
+      this._collider.off(
+        Contact2DType.BEGIN_CONTACT,
+        this.onBeginContact,
+        this
+      );
+    }
+    // 註銷動畫事件
+    if (this._animation) {
+      this._animation.off(
+        Animation.EventType.FINISHED,
+        this.onAnimationFinished,
+        this
+      );
+    }
   }
 
   onTouchMove(event: EventTouch) {
@@ -100,6 +169,7 @@ export class Player extends Component {
     // 設定父節點
     bullet.setParent(this.bulletParent);
   }
+
   twoShoot() {
     const bulletLeft = this.bulletPool_two.getBullet();
     const bulletRight = this.bulletPool_two.getBullet();
@@ -112,5 +182,52 @@ export class Player extends Component {
     // 設定父節點
     bulletLeft.setParent(this.bulletParent);
     bulletRight.setParent(this.bulletParent);
+  }
+
+  // 動畫播放結束
+  onAnimationFinished(type: Animation.EventType, state: AnimationState) {
+    if (state.name === this.destroyAnimationName) {
+      // TODO: 遊戲結束
+      console.log('遊戲結束');
+      game.pause();
+    } else if (state.name === this.hitAnimationName) {
+      // 結束無敵狀態
+      this._isInvisible = false;
+    }
+  }
+
+  // 碰撞開始：目前有分組(DEFAULT)，只會和敵機(Enemy)產生碰撞
+  onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D) {
+    // 無敵狀態不處理碰撞
+    if (this._isInvisible) return;
+    const enemy = otherCollider.getComponent(Enemy);
+    // 如果是敵機才處理
+    if (!enemy) return;
+    this.hp -= enemy.damage;
+    if (this.hp <= 0) {
+      // 播放被擊毀動畫
+      if (this.destroyAnimationName)
+        this._animation.play(this.destroyAnimationName);
+      // 停用碰撞元件（停止檢測碰撞）
+      this._collider.enabled = false;
+    } else {
+      // 播放被擊中動畫
+      if (this.hitAnimationName) this._animation.play(this.hitAnimationName);
+      // 要進入無敵狀態(由被擊中動畫來控制無敵時間長度，目前是0.5秒)
+      this._isInvisible = true;
+    }
+  }
+
+  // 重置玩家狀態(不一定會用到)
+  reset() {
+    // 重置血量
+    this.hp = this._maxHp;
+    // 重置 spriteFrame, color
+    if (this._body) {
+      this._body.spriteFrame = this._spriteFrame;
+      this._body.color = this._color;
+    }
+    // 啟用檢測元件
+    if (this._collider) this._collider.enabled = true;
   }
 }
