@@ -4,11 +4,13 @@ import {
   Component,
   director,
   game,
+  Input,
   Label,
   Node,
   sys
 } from 'cc';
 import { EventManager } from './EventManager';
+import { CanvasGameManager } from './CanvasGameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CanvasUIManager')
@@ -18,6 +20,8 @@ export class CanvasUIManager extends Component {
     return CanvasUIManager._instance;
   }
 
+  @property(Node)
+  public bombUI: Node = null;
   @property(Label)
   public bombCountLabel: Label = null;
   @property(Label)
@@ -56,6 +60,8 @@ export class CanvasUIManager extends Component {
       this
     );
     EventManager.eventTarget.on('gameOver', this.showGameOverPanel, this);
+    // 註冊觸擊炸彈事件
+    this.bombUI.on(Input.EventType.TOUCH_START, this.onTouchStartBomb, this);
     // 讀取本地端最高分數 localStorage 存的一定是字串
     let highScore = sys.localStorage.getItem('planeHighScore');
     if (!highScore) {
@@ -81,6 +87,17 @@ export class CanvasUIManager extends Component {
       this
     );
     EventManager.eventTarget.off('gameOver', this.showGameOverPanel, this);
+    // 註銷觸擊炸彈事件
+    this.bombUI.off(Input.EventType.TOUCH_START, this.onTouchStartBomb, this);
+  }
+
+  onTouchStartBomb() {
+    const bombCount = CanvasGameManager.instance.getBombCount();
+    // 使用炸彈
+    if (bombCount > 0) {
+      // 引爆炸彈(兩個偵聽：更新炸彈數、全範圍滅敵機)
+      EventManager.eventTarget.emit('detonateBomb');
+    }
   }
 
   updateBombCount(bombCount: number) {

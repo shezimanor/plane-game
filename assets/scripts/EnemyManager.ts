@@ -9,6 +9,8 @@ import {
   Vec2
 } from 'cc';
 import { EnemyPool } from './EnemyPool';
+import { EventManager } from './EventManager';
+import { Enemy } from './Enemy';
 const { ccclass, property } = _decorator;
 
 type EnemyCoordinate = {
@@ -53,6 +55,8 @@ export class EnemyManager extends Component {
     } else {
       this.destroy();
     }
+    // 註冊事件
+    EventManager.eventTarget.on('detonateBomb', this.killAllEnemy, this);
   }
 
   start() {
@@ -73,6 +77,8 @@ export class EnemyManager extends Component {
     this.unschedule(this.spawnEnemy00);
     this.unschedule(this.spawnEnemy01);
     this.unschedule(this.spawnEnemy02);
+    // 註銷事件
+    EventManager.eventTarget.off('detonateBomb', this.killAllEnemy, this);
   }
 
   spawnEnemy00() {
@@ -97,5 +103,15 @@ export class EnemyManager extends Component {
     );
     // 設定父節點
     enemy.setParent(this.node);
+  }
+
+  killAllEnemy() {
+    this.node.children.forEach((childNode: Node) => {
+      const enemy = childNode.getComponent(Enemy);
+      // 如果是敵機（正常情況這個節點內只有敵機），且子節點是啟用狀態並且在畫面中，就回收敵機
+      if (enemy && childNode.active && Math.abs(childNode.position.y) <= 450) {
+        enemy.kill();
+      }
+    });
   }
 }

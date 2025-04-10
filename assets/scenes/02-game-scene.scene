@@ -606,9 +606,9 @@
       "__uuid__": "636820ed-c9f6-4aa4-83b2-5b05f42abada",
       "__expectedType__": "cc.Prefab"
     },
-    "enemy00SpawnRate": 1,
-    "enemy01SpawnRate": 5,
-    "enemy02SpawnRate": 20,
+    "enemy00SpawnRate": 0.3,
+    "enemy01SpawnRate": 3,
+    "enemy02SpawnRate": 10,
     "_id": "addU17TLZIm7H2RV+sSutl"
   },
   {
@@ -940,8 +940,8 @@
       "__uuid__": "d528ad13-a956-431e-8f5a-ab9635e04872",
       "__expectedType__": "cc.Prefab"
     },
-    "reward01SpawnRate": 3,
-    "reward02SpawnRate": 7,
+    "reward01SpawnRate": 2,
+    "reward02SpawnRate": 5,
     "_id": "a1V7S/RjpKvKXHVswmPMZr"
   },
   {
@@ -3581,6 +3581,9 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "bombUI": {
+      "__id__": 46
+    },
     "bombCountLabel": {
       "__id__": 55
     },

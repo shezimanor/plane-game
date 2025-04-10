@@ -135,13 +135,7 @@ export class Enemy extends Component {
     if (!bullet) return;
     this.hp -= bullet.damage;
     if (this.hp <= 0) {
-      // 播放被擊毀動畫
-      if (this.destroyAnimationName)
-        this._animation.play(this.destroyAnimationName);
-      // 停用碰撞元件（停止檢測碰撞）
-      this._collider.enabled = false;
-      // 更新分數
-      CanvasGameManager.instance.addScore(this.score);
+      this.die();
     } else {
       // 播放被擊中動畫
       if (this.hitAnimationName) this._animation.play(this.hitAnimationName);
@@ -178,5 +172,20 @@ export class Enemy extends Component {
     }
     // 啟用檢測元件
     if (this._collider) this._collider.enabled = true;
+  }
+
+  die() {
+    // 播放被擊毀動畫
+    if (this.destroyAnimationName)
+      this._animation.play(this.destroyAnimationName);
+    // 停用碰撞元件（停止檢測碰撞）
+    this._collider.enabled = false;
+    // 更新分數
+    CanvasGameManager.instance.addScore(this.score);
+  }
+
+  kill() {
+    this.hp = 0;
+    this.die();
   }
 }
