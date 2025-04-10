@@ -113,6 +113,8 @@ export class Player extends Component {
   }
 
   update(deltaTime: number) {
+    // 如果血量 <= 0, 或是無敵時間就不處理
+    if (this.hp <= 0 || this._isInvisible) return;
     // 自動發射
     this._shootTimer += deltaTime;
     if (this._shootTimer >= this.shootRate) {
