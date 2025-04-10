@@ -19,6 +19,7 @@ import {
 import { EnemyManager } from './EnemyManager';
 import { EnemyPool } from './EnemyPool';
 import { Bullet } from './Bullet';
+import { CanvasGameManager } from './CanvasGameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Enemy')
@@ -41,6 +42,9 @@ export class Enemy extends Component {
   // 傷害值
   @property(CCInteger)
   public damage: number = 1;
+  // 分數
+  @property(CCInteger)
+  public score: number = 100;
 
   private _enemyManager: EnemyManager = null;
   private _bgHeight: number = 852;
@@ -137,6 +141,8 @@ export class Enemy extends Component {
         this._animation.play(this.destroyAnimationName);
       // 停用碰撞元件（停止檢測碰撞）
       this._collider.enabled = false;
+      // 更新分數
+      CanvasGameManager.instance.addScore(this.score);
     } else {
       // 播放被擊中動畫
       if (this.hitAnimationName) this._animation.play(this.hitAnimationName);

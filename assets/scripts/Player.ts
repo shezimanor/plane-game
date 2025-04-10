@@ -27,6 +27,7 @@ import { Bullet } from './Bullet';
 import { Enemy } from './Enemy';
 import { Reward } from './Reward';
 import { CanvasGameManager } from './CanvasGameManager';
+import { EventManager } from './EventManager';
 const { ccclass, property } = _decorator;
 
 enum ShootType {
@@ -118,6 +119,11 @@ export class Player extends Component {
     this.bulletPool_two = new BulletPool(this.bullet02Prefab, 'bulletPool_two');
     // 設定觸控事件
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+  }
+
+  start() {
+    // 更新 UI
+    EventManager.eventTarget.emit('updatePlayerHp', this.hp);
   }
 
   update(deltaTime: number) {
@@ -261,6 +267,9 @@ export class Player extends Component {
     // 有敵機才處理
     if (!enemy) return;
     this.hp -= enemy.damage;
+    // 更新 UI
+    EventManager.eventTarget.emit('updatePlayerHp', this.hp);
+    // 判斷血量
     if (this.hp <= 0) {
       // 播放被擊毀動畫
       if (this.destroyAnimationName)
@@ -279,6 +288,8 @@ export class Player extends Component {
   reset() {
     // 重置血量
     this.hp = this._maxHp;
+    // 更新 UI
+    EventManager.eventTarget.emit('updatePlayerHp', this.hp);
     // 重置 spriteFrame, color
     if (this._body) {
       this._body.spriteFrame = this._spriteFrame;

@@ -11,7 +11,10 @@ export class CanvasGameManager extends Component {
 
   // 炸彈數量
   @property(CCInteger)
-  bombCount: number = 0;
+  private _bombCount: number = 0;
+  // 玩家分數
+  @property(CCInteger)
+  private _playerScore: number = 0;
 
   protected onLoad(): void {
     // 單例模式
@@ -32,8 +35,14 @@ export class CanvasGameManager extends Component {
   }
 
   addBomb() {
-    this.bombCount += 1;
-    console.log('Bomb Count', this.bombCount);
-    EventManager.eventTarget.emit('updateBombCount', this.bombCount);
+    this._bombCount += 1;
+    // 更新 UI
+    EventManager.eventTarget.emit('updateBombCount', this._bombCount);
+  }
+
+  addScore(score: number) {
+    this._playerScore += score;
+    // 更新 UI
+    EventManager.eventTarget.emit('updatePlayerScore', this._playerScore);
   }
 }
