@@ -130,7 +130,6 @@ export class Enemy extends Component {
 
   // 碰撞開始：目前有分組，只會和敵機產生碰撞
   onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D) {
-    // console.log(selfCollider.name, otherCollider.name);
     const bullet = otherCollider.getComponent(Bullet);
     // 如果是子彈才處理
     if (!bullet) return;

@@ -211,9 +211,13 @@ export class Player extends Component {
   // 動畫播放結束
   onAnimationFinished(type: Animation.EventType, state: AnimationState) {
     if (state.name === this.destroyAnimationName) {
-      // TODO: 遊戲結束
-      console.log('遊戲結束');
+      // 遊戲結束
       game.pause();
+      // 顯示結束畫面(會同時更新結算分數畫面)
+      EventManager.eventTarget.emit(
+        'gameOver',
+        CanvasGameManager.instance.getPlayerScore()
+      );
     } else if (state.name === this.hitAnimationName) {
       // 結束無敵狀態
       this._isInvisible = false;
@@ -245,7 +249,6 @@ export class Player extends Component {
     switch (reward.rewardType) {
       // 雙發子彈
       case 1:
-        console.log('get 雙發子彈');
         this.shootType = ShootType.TwoShoot;
         // 設定計時器：雙發子彈有時效性，而且可以延長時間(timer 歸零)，所以使用 update 自定義定時器
         this._twoShootTimer = 0;

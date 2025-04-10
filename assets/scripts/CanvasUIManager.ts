@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, game, Label, Node } from 'cc';
+import { _decorator, Button, Component, game, Label, Node, sys } from 'cc';
 import { EventManager } from './EventManager';
 const { ccclass, property } = _decorator;
 
@@ -10,15 +10,26 @@ export class CanvasUIManager extends Component {
   }
 
   @property(Label)
-  public BombCountLabel: Label = null;
+  public bombCountLabel: Label = null;
   @property(Label)
-  public PlaneHpLabel: Label = null;
+  public planeHpLabel: Label = null;
   @property(Label)
-  public PlayerScoreLabel: Label = null;
+  public playerScoreLabel: Label = null;
   @property(Button)
-  public PauseButton: Button = null;
+  public pauseButton: Button = null;
   @property(Button)
-  public ResumeButton: Button = null;
+  public resumeButton: Button = null;
+  @property(Node)
+  public gameOverPanel: Node = null;
+  @property(Button)
+  public restartButton: Button = null;
+  @property(Label)
+  public highestScoreLabel: Label = null;
+  @property(Label)
+  public currentScoreLabel: Label = null;
+
+  // 最高分
+  private _highestScore: number = 0;
 
   protected onLoad(): void {
     // 單例模式
@@ -35,6 +46,17 @@ export class CanvasUIManager extends Component {
       this.updatePlayerScore,
       this
     );
+    EventManager.eventTarget.on('gameOver', this.showGameOverPanel, this);
+    // 讀取本地端最高分數 localStorage 存的一定是字串
+    let highScore = sys.localStorage.getItem('planeHighScore');
+    if (!highScore) {
+      highScore = '0';
+      // 沒有紀錄，先存 0
+      sys.localStorage.setItem('planeHighScore', highScore);
+    }
+    // 顯示最高分數
+    this._highestScore = Number(highScore);
+    this.highestScoreLabel.string = `${this._highestScore}`;
   }
 
   protected onDestroy(): void {
@@ -49,38 +71,63 @@ export class CanvasUIManager extends Component {
       this.updatePlayerScore,
       this
     );
+    EventManager.eventTarget.off('gameOver', this.showGameOverPanel, this);
   }
 
   updateBombCount(bombCount: number) {
     // 更新炸彈數量
-    this.BombCountLabel.string = `${bombCount}`;
+    this.bombCountLabel.string = `${bombCount}`;
   }
 
   updatePlayerHp(hp: number) {
     // 更新玩家(飛機)血量
-    this.PlaneHpLabel.string = `${hp < 0 ? 0 : hp}`;
+    this.planeHpLabel.string = `${hp < 0 ? 0 : hp}`;
   }
 
   updatePlayerScore(score: number) {
     // 更新玩家分數
-    this.PlayerScoreLabel.string = `${score}`;
+    this.playerScoreLabel.string = `${score}`;
+  }
+
+  updateCurrentScore(score: number) {
+    // 更新當前分數
+    this.currentScoreLabel.string = `${score}`;
+  }
+
+  updateHighestScore(newScore: number) {
+    // 更新最高分數
+    const highScore = Number(sys.localStorage.getItem('planeHighScore'));
+    if (newScore > highScore) {
+      sys.localStorage.setItem('planeHighScore', `${newScore}`);
+      this._highestScore = newScore;
+      this.highestScoreLabel.string = `${this._highestScore}`;
+    }
   }
 
   resumeGame() {
     // 按鈕切換
-    this.PauseButton.node.active = true;
-    this.ResumeButton.node.active = false;
+    this.pauseButton.node.active = true;
+    this.resumeButton.node.active = false;
     // 暫停遊戲
     game.resume();
   }
 
   pauseGame() {
     // 按鈕切換
-    this.ResumeButton.node.active = true;
-    this.PauseButton.node.active = false;
+    this.resumeButton.node.active = true;
+    this.pauseButton.node.active = false;
     // 暫停遊戲(要先等按鈕渲染切換完成)
     this.scheduleOnce(() => {
       game.pause();
     }, 0);
+  }
+
+  showGameOverPanel(score: number) {
+    // 顯示結束畫面
+    this.gameOverPanel.active = true;
+    // 更新當前分數
+    this.updateCurrentScore(score);
+    // 更新最高分數(判斷在裡面)
+    this.updateHighestScore(score);
   }
 }

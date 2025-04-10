@@ -19,7 +19,6 @@ export class CanvasGameManager extends Component {
   protected onLoad(): void {
     // 單例模式
     if (!CanvasGameManager._instance) {
-      // console.log('CanvasGameManager instance created');
       CanvasGameManager._instance = this;
     } else {
       this.destroy();
@@ -44,5 +43,9 @@ export class CanvasGameManager extends Component {
     this._playerScore += score;
     // 更新 UI
     EventManager.eventTarget.emit('updatePlayerScore', this._playerScore);
+  }
+
+  getPlayerScore(): number {
+    return this._playerScore;
   }
 }
