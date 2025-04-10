@@ -1,4 +1,13 @@
-import { _decorator, Button, Component, game, Label, Node, sys } from 'cc';
+import {
+  _decorator,
+  Button,
+  Component,
+  director,
+  game,
+  Label,
+  Node,
+  sys
+} from 'cc';
 import { EventManager } from './EventManager';
 const { ccclass, property } = _decorator;
 
@@ -104,7 +113,7 @@ export class CanvasUIManager extends Component {
     }
   }
 
-  resumeGame() {
+  onClickResumeGame() {
     // 按鈕切換
     this.pauseButton.node.active = true;
     this.resumeButton.node.active = false;
@@ -112,7 +121,7 @@ export class CanvasUIManager extends Component {
     game.resume();
   }
 
-  pauseGame() {
+  onClickPauseGame() {
     // 按鈕切換
     this.resumeButton.node.active = true;
     this.pauseButton.node.active = false;
@@ -120,6 +129,12 @@ export class CanvasUIManager extends Component {
     this.scheduleOnce(() => {
       game.pause();
     }, 0);
+  }
+
+  onClickRestartGame() {
+    director.loadScene('01-start-scene');
+    // 重新開始遊戲
+    game.resume();
   }
 
   showGameOverPanel(score: number) {

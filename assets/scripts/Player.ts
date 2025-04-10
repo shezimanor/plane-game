@@ -121,6 +121,11 @@ export class Player extends Component {
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
   }
 
+  protected onEnable(): void {
+    console.log('Player onEnable');
+    this.reset();
+  }
+
   start() {
     // 更新 UI
     EventManager.eventTarget.emit('updatePlayerHp', this.hp);

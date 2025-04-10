@@ -23,8 +23,6 @@ export class CanvasGameManager extends Component {
     } else {
       this.destroy();
     }
-    // 設為常駐節點(防止切換場景時被卸載)
-    director.addPersistRootNode(this.node);
   }
 
   protected onDestroy(): void {
