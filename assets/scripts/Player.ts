@@ -25,6 +25,7 @@ import {
 import { BulletPool } from './BulletPool';
 import { Bullet } from './Bullet';
 import { Enemy } from './Enemy';
+import { Reward } from './Reward';
 const { ccclass, property } = _decorator;
 
 enum ShootType {
@@ -59,6 +60,9 @@ export class Player extends Component {
   // 生命值
   @property(CCInteger)
   public hp: number = 3;
+  // 雙發模式的時效
+  @property(CCInteger)
+  public twoShootDuration: number = 5;
 
   // 子彈池
   public bulletPool_one: BulletPool = null;
@@ -72,6 +76,9 @@ export class Player extends Component {
   // 子彈二的雙發初始位置是飛機圖片的兩翼槍口位置（一樣是 bulletParent 的本地座標）
   public bullet02LeftInitVec3: Vec3 = v3(-22, -29.5, 0);
   public bullet02RightInitVec3: Vec3 = v3(22, -29.5, 0);
+  // 雙發模式的計時器
+  private _twoShootTimer: number = 0;
+
   // 子彈計時器
   private _shootTimer: number = 0;
   // 碰撞器(Player 的碰撞群組為 DEFAULT)
@@ -117,6 +124,9 @@ export class Player extends Component {
     if (this.hp <= 0 || this._isInvisible) return;
     // 自動發射
     this._shootTimer += deltaTime;
+    // 雙發模式有計時器
+    if (this.shootType === ShootType.TwoShoot) this._twoShootTimer += deltaTime;
+    // 計時器到達發射速率就發射
     if (this._shootTimer >= this.shootRate) {
       this._shootTimer = 0;
       // 決定發射模式
@@ -126,6 +136,11 @@ export class Player extends Component {
           break;
         case ShootType.TwoShoot:
           this.twoShoot();
+          // 雙發模式有計時器
+          if (this._twoShootTimer >= this.twoShootDuration) {
+            this.shootType = ShootType.OneShoot;
+            this._twoShootTimer = 0;
+          }
           break;
       }
     }
@@ -202,8 +217,47 @@ export class Player extends Component {
   onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D) {
     // 無敵狀態不處理碰撞
     if (this._isInvisible) return;
-    const enemy = otherCollider.getComponent(Enemy);
-    // 如果是敵機才處理
+    switch (otherCollider.group) {
+      // 敵機 2^2
+      case 4:
+        const enemy = otherCollider.getComponent(Enemy);
+        this.contactEnemy(enemy);
+        break;
+      // 獎品 2^3
+      case 8:
+        const reward = otherCollider.getComponent(Reward);
+        this.contactReward(reward);
+        break;
+    }
+  }
+
+  contactReward(reward: Reward) {
+    // 有獎品才處理
+    if (!reward) return;
+    // 獎品類型
+    switch (reward.rewardType) {
+      // 雙發子彈
+      case 1:
+        console.log('get 雙發子彈');
+        this.shootType = ShootType.TwoShoot;
+        // 設定計時器：雙發子彈有時效性，而且可以延長時間(timer 歸零)，所以使用 update 自定義定時器
+        this._twoShootTimer = 0;
+        break;
+      // 大炸彈
+      case 2:
+        // TODO: 大炸彈
+        break;
+    }
+    // 停用碰撞元件（停止檢測碰撞）
+    reward.collider.enabled = false;
+    // 停用獎品行為
+    this.scheduleOnce(() => {
+      reward.stopAction();
+    }, 0);
+  }
+
+  contactEnemy(enemy: Enemy) {
+    // 有敵機才處理
     if (!enemy) return;
     this.hp -= enemy.damage;
     if (this.hp <= 0) {

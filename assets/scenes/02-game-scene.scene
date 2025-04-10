@@ -98,7 +98,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 240,
+      "x": 240.00000000000003,
       "y": 425.00000000000006,
       "z": 0
     },
@@ -600,9 +600,9 @@
       "__uuid__": "636820ed-c9f6-4aa4-83b2-5b05f42abada",
       "__expectedType__": "cc.Prefab"
     },
-    "enemy00SpawnRate": 0.3,
-    "enemy01SpawnRate": 2,
-    "enemy02SpawnRate": 5,
+    "enemy00SpawnRate": 1,
+    "enemy01SpawnRate": 5,
+    "enemy02SpawnRate": 20,
     "_id": "addU17TLZIm7H2RV+sSutl"
   },
   {
@@ -842,7 +842,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 480,
+      "width": 480.00000000000006,
       "height": 850
     },
     "_anchorPoint": {

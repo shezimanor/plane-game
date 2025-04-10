@@ -146,7 +146,7 @@ export class Enemy extends Component {
     // 停用子彈行為
     this.scheduleOnce(() => {
       bullet.stopAction();
-    }, 0.1);
+    }, 0);
   }
 
   // 終止敵機行為

@@ -2,6 +2,7 @@ import {
   _decorator,
   CCInteger,
   CCString,
+  Collider2D,
   Component,
   Node,
   UITransform
@@ -10,7 +11,7 @@ import { RewardManager } from './RewardManager';
 import { RewardPool } from './RewardPool';
 const { ccclass, property } = _decorator;
 
-enum ShootType {
+export enum ShootType {
   TwoShoot = 1,
   BigBomb = 2
 }
@@ -25,10 +26,24 @@ export class Reward extends Component {
   public speed: number = 200;
   // 獎品項目: 1, 2
   @property(CCInteger)
-  private rewardType: ShootType = ShootType.TwoShoot;
+  public rewardType: ShootType = ShootType.TwoShoot;
 
+  // 碰撞器會被玩家讀取
+  public collider: Collider2D = null;
   private _rewardManager: RewardManager = null;
   private _bgHeight: number = 852;
+
+  protected onLoad(): void {
+    // 設定獎品管理器實例
+    this._rewardManager = this.node.parent.getComponent(RewardManager);
+    // 設定碰撞元件
+    this.collider = this.getComponent(Collider2D);
+  }
+
+  protected onEnable(): void {
+    // 獎品有獎品池做循環使用，所以 RewardPool.markAsInactive 會觸發 onEnable
+    this.reset();
+  }
 
   update(deltaTime: number) {
     const position = this.node.position;
@@ -46,16 +61,22 @@ export class Reward extends Component {
       this.stopAction();
     }
   }
-  // 終止獎品物行為
+  // 終止獎品行為
   stopAction() {
     if (
       this._rewardManager &&
       this._rewardManager[this.poolName] instanceof RewardPool
     ) {
-      this._rewardManager[this.poolName].recycleEnemy(this.node);
+      this._rewardManager[this.poolName].recycleReward(this.node);
     } else {
-      console.error('EnemyPool not found');
+      console.error('RewardPool not found');
       this.node.destroy();
     }
+  }
+
+  // 重置獎品狀態
+  reset() {
+    // 啟用檢測元件
+    if (this.collider) this.collider.enabled = true;
   }
 }
