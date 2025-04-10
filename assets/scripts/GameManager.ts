@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Node } from 'cc';
+import { _decorator, CCInteger, Component, director, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -7,6 +7,10 @@ export class GameManager extends Component {
   public static get instance(): GameManager {
     return GameManager._instance;
   }
+
+  // 炸彈數量
+  @property(CCInteger)
+  bombCount: number = 0;
 
   protected onLoad(): void {
     // 單例模式
@@ -20,13 +24,13 @@ export class GameManager extends Component {
     director.addPersistRootNode(this.node);
   }
 
-  start() {}
-
-  update(deltaTime: number) {}
-
   protected onDestroy(): void {
     if (GameManager._instance === this) {
       GameManager._instance = null;
     }
+  }
+
+  addBomb() {
+    this.bombCount++;
   }
 }

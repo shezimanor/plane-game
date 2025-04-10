@@ -26,6 +26,7 @@ import { BulletPool } from './BulletPool';
 import { Bullet } from './Bullet';
 import { Enemy } from './Enemy';
 import { Reward } from './Reward';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 enum ShootType {
@@ -245,7 +246,7 @@ export class Player extends Component {
         break;
       // 大炸彈
       case 2:
-        // TODO: 大炸彈
+        GameManager.instance.addBomb();
         break;
     }
     // 停用碰撞元件（停止檢測碰撞）
