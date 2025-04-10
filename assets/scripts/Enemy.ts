@@ -76,7 +76,6 @@ export class Enemy extends Component {
   }
 
   protected onEnable(): void {
-    console.log('enemy onEnable');
     // 敵機有敵機池做循環使用，所以 EnemyPool.markAsInactive 會觸發 onEnable
     this.reset();
   }

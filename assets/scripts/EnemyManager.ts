@@ -22,6 +22,7 @@ export class EnemyManager extends Component {
   public static get instance(): EnemyManager {
     return EnemyManager._instance;
   }
+  // 預製體
   @property(Prefab)
   public enemy00Prefab: Prefab = null;
   @property(Prefab)
@@ -55,7 +56,7 @@ export class EnemyManager extends Component {
   }
 
   start() {
-    // 設定子彈池
+    // 設定敵機池
     this.enemyPool_zero = new EnemyPool(this.enemy00Prefab, 'enemyPool_zero');
     this.enemyPool_one = new EnemyPool(this.enemy01Prefab, 'enemyPool_one');
     this.enemyPool_two = new EnemyPool(this.enemy02Prefab, 'enemyPool_two');
@@ -64,8 +65,6 @@ export class EnemyManager extends Component {
     this.schedule(this.spawnEnemy01, this.enemy01SpawnRate);
     this.schedule(this.spawnEnemy02, this.enemy02SpawnRate);
   }
-
-  update(deltaTime: number) {}
 
   protected onDestroy(): void {
     if (EnemyManager._instance === this) {

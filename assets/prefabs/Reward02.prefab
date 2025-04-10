@@ -375,6 +375,9 @@
     "__prefab": {
       "__id__": 13
     },
+    "poolName": "rewardPool_two",
+    "speed": 100,
+    "rewardType": 2,
     "_id": ""
   },
   {
@@ -390,6 +393,7 @@
       "__id__": 0
     },
     "fileId": "5awTk08QpMgL6kACdeYn8W",
+    "instance": null,
     "targetOverrides": null
   }
 ]
