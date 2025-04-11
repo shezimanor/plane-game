@@ -92,7 +92,6 @@ export class Enemy extends Component {
     }
     // 設定敵機管理器實例
     this._enemyManager = this.node.parent.getComponent(EnemyManager);
-    // 設定擊毀音效
   }
 
   protected onEnable(): void {
