@@ -289,8 +289,8 @@
     "destroyAnimationName": "Enemy2Destroy",
     "hitAnimationName": "Enemy2Hit",
     "speed": 100,
-    "hp": 20,
-    "damage": 10,
+    "hp": 10,
+    "damage": 3,
     "score": 300,
     "destroySoundType": 2,
     "_id": ""

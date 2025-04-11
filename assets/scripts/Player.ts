@@ -19,6 +19,7 @@ import {
   Prefab,
   Sprite,
   SpriteFrame,
+  UITransform,
   v3,
   Vec3
 } from 'cc';
@@ -69,7 +70,8 @@ export class Player extends Component {
   // 移動邊界範圍
   public borderX: number = 230;
   public borderY: number = 380;
-  public tempVec3: Vec3 = v3(0, 0, 0);
+  public tempUIVec3: Vec3 = new Vec3(0, 0, 0);
+  public tempLocalVec3: Vec3 = new Vec3(0, 0, 0);
   // 子彈一的初始位置是 bulletParent 的錨點位置
   public bullet01InitVec3: Vec3 = v3(0, 0, 0);
   // 子彈二的雙發初始位置是飛機圖片的兩翼槍口位置（一樣是 bulletParent 的本地座標）
@@ -179,11 +181,18 @@ export class Player extends Component {
   }
 
   onTouchMove(event: EventTouch) {
-    const position = this.node.position;
-    let targetPosition = this.tempVec3.set(
-      math.clamp(position.x + event.getDeltaX(), -this.borderX, this.borderX),
-      math.clamp(position.y + event.getDeltaY(), -this.borderY, this.borderY),
-      position.z
+    // 取得當前觸控點的 UI 座標
+    const touchUIPosition = event.getUILocation();
+    this.tempUIVec3.set(touchUIPosition.x, touchUIPosition.y, 0);
+    // 轉換為本地座標
+    this.node.parent
+      .getComponent(UITransform)
+      .convertToNodeSpaceAR(this.tempUIVec3, this.tempLocalVec3);
+    // const position = this.node.position;
+    let targetPosition = this.tempLocalVec3.set(
+      math.clamp(this.tempLocalVec3.x, -this.borderX, this.borderX),
+      math.clamp(this.tempLocalVec3.y, -this.borderY, this.borderY),
+      this.tempLocalVec3.z
     );
     this.node.setPosition(targetPosition);
   }
