@@ -9,41 +9,36 @@ export class Background extends Component {
   public bgNode2: Node = null;
   @property(CCInteger)
   public speed: number = 120;
-
   private _height: number = 0;
+  private _nodes: Node[] = [];
 
   start() {
     this._height = this.bgNode1.getComponent(UITransform).height;
+    this._nodes = [this.bgNode1, this.bgNode2];
   }
 
   update(deltaTime: number) {
-    let position1 = this.bgNode1.position;
-    let position2 = this.bgNode2.position;
-    this.bgNode1.setPosition(
-      position1.x,
-      position1.y - this.speed * deltaTime,
-      position1.z
-    );
-    this.bgNode2.setPosition(
-      position2.x,
-      position2.y - this.speed * deltaTime,
-      position2.z
-    );
-    let currentPosition1 = this.bgNode1.position;
-    let currentPosition2 = this.bgNode2.position;
-    if (currentPosition1.y < -this._height) {
-      this.bgNode1.setPosition(
-        currentPosition1.x,
-        currentPosition2.y + this._height,
-        currentPosition1.z
+    for (let node of this._nodes) {
+      let position = node.position;
+      node.setPosition(
+        position.x,
+        position.y - this.speed * deltaTime,
+        position.z
       );
     }
-    if (currentPosition2.y < -this._height) {
-      this.bgNode2.setPosition(
-        currentPosition2.x,
-        currentPosition1.y + this._height,
-        currentPosition2.z
-      );
+
+    for (let i = 0; i < this._nodes.length; i++) {
+      let currentNode = this._nodes[i];
+      let nextNode = this._nodes[(i + 1) % this._nodes.length];
+      let currentPosition = currentNode.position;
+
+      if (currentPosition.y < -this._height) {
+        currentNode.setPosition(
+          currentPosition.x,
+          nextNode.position.y + this._height,
+          currentPosition.z
+        );
+      }
     }
   }
 }
