@@ -14,32 +14,32 @@ import {
   SpriteFrame,
   UITransform
 } from 'cc';
-import { EnemyManager } from './EnemyManager';
-import { EnemyPool } from './EnemyPool';
 import { Bullet } from './Bullet';
 import { CanvasGameManager } from './CanvasGameManager';
 import { AudioManager } from './AudioManager';
-import { EnemyType, SoundClipType } from './types/enums';
+import { EnemyPoolName, EnemyType, SoundClipType } from './types/enums';
+import { EventManager } from './EventManager';
 const { ccclass, property } = _decorator;
 
 // 讓屬性裝飾器能看懂 EnemyType, SoundClipType
 Enum(EnemyType);
 Enum(SoundClipType);
+Enum(EnemyPoolName);
 
 @ccclass('Enemy')
 export class Enemy extends Component {
   // 敵機類型
   @property({ type: EnemyType })
   public enemyType: EnemyType = EnemyType.Enemy0;
+  // 物件池名稱
+  @property({ type: EnemyPoolName })
+  public poolName: EnemyPoolName = EnemyPoolName.EnemyPool_zero;
   // 被擊毀動畫（死亡動畫）
   @property(CCString)
   private destroyAnimationName: string = '';
   // 被擊中動畫（受傷動畫）
   @property(CCString)
   private hitAnimationName: string = '';
-  // 物件池名稱
-  @property(CCString)
-  public poolName: string = '';
   // 速度
   @property(CCInteger)
   public speed: number = 200;
@@ -56,7 +56,6 @@ export class Enemy extends Component {
   @property({ type: SoundClipType })
   public destroySoundType: SoundClipType = SoundClipType.Enemy0Die;
 
-  private _enemyManager: EnemyManager = null;
   private _bgHeight: number = 852;
   private _collider: Collider2D = null;
   private _animation: Animation = null;
@@ -85,8 +84,6 @@ export class Enemy extends Component {
     if (this._collider) {
       this._collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
     }
-    // 設定敵機管理器實例
-    this._enemyManager = this.node.parent.getComponent(EnemyManager);
   }
 
   protected onEnable(): void {
@@ -159,15 +156,8 @@ export class Enemy extends Component {
 
   // 終止敵機行為
   stopAction() {
-    if (
-      this._enemyManager &&
-      this._enemyManager[this.poolName] instanceof EnemyPool
-    ) {
-      this._enemyManager[this.poolName].recycleEnemy(this.node);
-    } else {
-      console.error('EnemyPool not found');
-      this.node.destroy();
-    }
+    // 發布事件(EnemyManager.ts 訂閱)
+    EventManager.eventTarget.emit('stopEnemy', this.node, this.poolName);
   }
 
   // 重置敵機狀態

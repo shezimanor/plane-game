@@ -29,6 +29,7 @@ import { CanvasGameManager } from './CanvasGameManager';
 import { EventManager } from './EventManager';
 import { AudioManager } from './AudioManager';
 import { BulletPoolName, ShootType, SoundClipType } from './types/enums';
+import { Bullet } from './Bullet';
 const { ccclass, property } = _decorator;
 
 @ccclass('Player')
@@ -189,7 +190,7 @@ export class Player extends Component {
 
   oneShoot() {
     const bullet = this.bulletPool_one.getBullet();
-    const bulletInstance = this.bulletPool_one.getBulletComponent(bullet);
+    const bulletInstance = bullet.getComponent(Bullet);
     // 設定位置
     bullet.setPosition(this.bullet01InitVec3);
     // 設定子彈的初始 x 座標，因為飛機會動，但子彈的 x 是固定的。
@@ -203,10 +204,8 @@ export class Player extends Component {
   twoShoot() {
     const bulletLeft = this.bulletPool_two.getBullet();
     const bulletRight = this.bulletPool_two.getBullet();
-    const bulletLeftInstance =
-      this.bulletPool_two.getBulletComponent(bulletLeft);
-    const bulletRightInstance =
-      this.bulletPool_two.getBulletComponent(bulletRight);
+    const bulletLeftInstance = bulletLeft.getComponent(Bullet);
+    const bulletRightInstance = bulletRight.getComponent(Bullet);
     // 設定位置
     bulletLeft.setPosition(this.bullet02LeftInitVec3);
     bulletRight.setPosition(this.bullet02RightInitVec3);
@@ -332,7 +331,7 @@ export class Player extends Component {
 
   stopBullet(bullet: Node, poolName: BulletPoolName) {
     switch (poolName) {
-      case BulletPoolName.bulletPool_one:
+      case BulletPoolName.BulletPool_one:
         if (this.bulletPool_one) {
           this.bulletPool_one.recycleBullet(bullet);
         } else {
@@ -340,7 +339,7 @@ export class Player extends Component {
           bullet.destroy();
         }
         break;
-      case BulletPoolName.bulletPool_two:
+      case BulletPoolName.BulletPool_two:
         if (this.bulletPool_two) {
           this.bulletPool_two.recycleBullet(bullet);
         } else {

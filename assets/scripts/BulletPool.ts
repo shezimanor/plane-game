@@ -1,5 +1,4 @@
 import { Prefab, Node, instantiate } from 'cc';
-import { Bullet } from './Bullet';
 
 export class BulletPool {
   // 這個 pool 只收已經停用的子彈
@@ -28,11 +27,6 @@ export class BulletPool {
       // 回傳
       return bullet;
     }
-  }
-
-  getBulletComponent(bullet: Node): Bullet {
-    // 取得子彈的腳本實例
-    return bullet.getComponent(Bullet);
   }
 
   // 回收一個子彈

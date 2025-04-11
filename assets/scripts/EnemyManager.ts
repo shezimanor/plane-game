@@ -2,6 +2,7 @@ import { _decorator, CCFloat, Component, math, Node, Prefab } from 'cc';
 import { EnemyPool } from './EnemyPool';
 import { EventManager } from './EventManager';
 import { Enemy } from './Enemy';
+import { EnemyPoolName } from './types/enums';
 const { ccclass, property } = _decorator;
 
 type EnemyCoordinate = {
@@ -48,6 +49,8 @@ export class EnemyManager extends Component {
     }
     // 註冊事件
     EventManager.eventTarget.on('detonateBomb', this.killAllEnemy, this);
+    // 訂閱事件(Enemy.ts發布)
+    EventManager.eventTarget.on('stopEnemy', this.stopEnemy, this);
   }
 
   start() {
@@ -70,6 +73,7 @@ export class EnemyManager extends Component {
     this.unschedule(this.spawnEnemy02);
     // 註銷事件
     EventManager.eventTarget.off('detonateBomb', this.killAllEnemy, this);
+    EventManager.eventTarget.off('stopEnemy', this.stopEnemy, this);
   }
 
   spawnEnemy00() {
@@ -94,6 +98,35 @@ export class EnemyManager extends Component {
     );
     // 設定父節點
     enemy.setParent(this.node);
+  }
+
+  stopEnemy(enemy: Node, poolName: EnemyPoolName) {
+    switch (poolName) {
+      case EnemyPoolName.EnemyPool_zero:
+        if (this.enemyPool_zero) {
+          this.enemyPool_zero.recycleEnemy(enemy);
+        } else {
+          console.error('EnemyPool0 not found');
+          enemy.destroy();
+        }
+        break;
+      case EnemyPoolName.EnemyPool_one:
+        if (this.enemyPool_one) {
+          this.enemyPool_one.recycleEnemy(enemy);
+        } else {
+          console.error('EnemyPool1 not found');
+          enemy.destroy();
+        }
+        break;
+      case EnemyPoolName.EnemyPool_two:
+        if (this.enemyPool_two) {
+          this.enemyPool_two.recycleEnemy(enemy);
+        } else {
+          console.error('EnemyPool2 not found');
+          enemy.destroy();
+        }
+        break;
+    }
   }
 
   killAllEnemy() {

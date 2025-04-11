@@ -285,9 +285,9 @@
       "__id__": 13
     },
     "enemyType": 1,
+    "poolName": 1,
     "destroyAnimationName": "Enemy1Destroy",
     "hitAnimationName": "Enemy1Hit",
-    "poolName": "enemyPool_one",
     "speed": 200,
     "hp": 4,
     "damage": 2,

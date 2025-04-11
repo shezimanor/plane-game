@@ -39,6 +39,13 @@ export enum RewardType {
 
 // 子彈池名稱
 export enum BulletPoolName {
-  bulletPool_one,
-  bulletPool_two
+  BulletPool_one,
+  BulletPool_two
+}
+
+// 敵機池名稱
+export enum EnemyPoolName {
+  EnemyPool_zero,
+  EnemyPool_one,
+  EnemyPool_two
 }

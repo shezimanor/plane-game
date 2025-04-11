@@ -15,7 +15,7 @@ Enum(BulletPoolName);
 export class Bullet extends Component {
   // 物件池名稱
   @property({ type: BulletPoolName })
-  public poolName: BulletPoolName = BulletPoolName.bulletPool_one;
+  public poolName: BulletPoolName = BulletPoolName.BulletPool_one;
   // 速度
   @property(CCInteger)
   public speed: number = 500;
@@ -62,7 +62,7 @@ export class Bullet extends Component {
 
   // 終止子彈行為
   stopAction() {
-    // 事件發布(Player.ts 訂閱)
+    // 發布事件(Player.ts 訂閱)
     EventManager.eventTarget.emit('stopBullet', this.node, this.poolName);
   }
 
