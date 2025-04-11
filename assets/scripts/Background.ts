@@ -7,14 +7,18 @@ export class Background extends Component {
   public bgNode1: Node = null;
   @property(Node)
   public bgNode2: Node = null;
+  @property(Node)
+  public bgNode3: Node = null;
   @property(CCInteger)
   public speed: number = 120;
   private _height: number = 0;
+  private _limit: number = 0;
   private _nodes: Node[] = [];
 
   start() {
     this._height = this.bgNode1.getComponent(UITransform).height;
-    this._nodes = [this.bgNode1, this.bgNode2];
+    this._limit = (this._height * 3) / 2;
+    this._nodes = [this.bgNode1, this.bgNode2, this.bgNode3];
   }
 
   update(deltaTime: number) {
@@ -27,15 +31,17 @@ export class Background extends Component {
       );
     }
 
-    for (let i = 0; i < this._nodes.length; i++) {
+    const nodesLength = this._nodes.length;
+
+    for (let i = 0; i < nodesLength; i++) {
       let currentNode = this._nodes[i];
-      let nextNode = this._nodes[(i + 1) % this._nodes.length];
+      let prevNode = this._nodes[(i - 1 + nodesLength) % nodesLength];
       let currentPosition = currentNode.position;
 
-      if (currentPosition.y < -this._height) {
+      if (currentPosition.y < -this._limit) {
         currentNode.setPosition(
           currentPosition.x,
-          nextNode.position.y + this._height,
+          prevNode.position.y + this._height,
           currentPosition.z
         );
       }
