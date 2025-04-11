@@ -1,5 +1,6 @@
-import { _decorator, CCInteger, Component, director, Node } from 'cc';
+import { _decorator, CCInteger, Component } from 'cc';
 import { EventManager } from './EventManager';
+import { AudioManager, MusicClipType } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CanvasGameManager')
@@ -25,6 +26,11 @@ export class CanvasGameManager extends Component {
     }
     // 註冊事件
     EventManager.eventTarget.on('detonateBomb', this.detonateBomb, this);
+  }
+
+  protected start(): void {
+    // 播放背景音樂
+    AudioManager.instance.playMusic(MusicClipType.Bgm);
   }
 
   protected onDestroy(): void {

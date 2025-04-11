@@ -28,6 +28,7 @@ import { Enemy } from './Enemy';
 import { Reward } from './Reward';
 import { CanvasGameManager } from './CanvasGameManager';
 import { EventManager } from './EventManager';
+import { AudioManager, SoundClipType } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 enum ShootType {
@@ -84,7 +85,6 @@ export class Player extends Component {
   // 子彈計時器
   private _shootTimer: number = 0;
   // 碰撞器(Player 的碰撞群組為 DEFAULT)
-  // TODO: 後續再來考慮碰撞管理器統一管理碰撞
   private _collider: Collider2D = null;
   private _animation: Animation = null;
   private _maxHp: number = 1;
@@ -197,6 +197,8 @@ export class Player extends Component {
     bullet.getComponent(Bullet).setInitWorldPositionX();
     // 設定父節點
     bullet.setParent(this.bulletParent);
+    // 子彈音效
+    AudioManager.instance.playSound(SoundClipType.Bullet);
   }
 
   twoShoot() {
@@ -211,6 +213,8 @@ export class Player extends Component {
     // 設定父節點
     bulletLeft.setParent(this.bulletParent);
     bulletRight.setParent(this.bulletParent);
+    // 子彈音效
+    AudioManager.instance.playSound(SoundClipType.Bullet);
   }
 
   // 動畫播放結束
@@ -257,10 +261,14 @@ export class Player extends Component {
         this.shootType = ShootType.TwoShoot;
         // 設定計時器：雙發子彈有時效性，而且可以延長時間(timer 歸零)，所以使用 update 自定義定時器
         this._twoShootTimer = 0;
+        // 播放音效
+        AudioManager.instance.playSound(SoundClipType.GetDouble);
         break;
       // 大炸彈
       case 2:
         CanvasGameManager.instance.addBomb();
+        // 播放音效
+        AudioManager.instance.playSound(SoundClipType.GetBomb);
         break;
     }
     // 停用碰撞元件（停止檢測碰撞）
@@ -279,17 +287,29 @@ export class Player extends Component {
     EventManager.eventTarget.emit('updatePlayerHp', this.hp);
     // 判斷血量
     if (this.hp <= 0) {
-      // 播放被擊毀動畫
-      if (this.destroyAnimationName)
-        this._animation.play(this.destroyAnimationName);
-      // 停用碰撞元件（停止檢測碰撞）
-      this._collider.enabled = false;
+      this.die();
     } else {
-      // 播放被擊中動畫
-      if (this.hitAnimationName) this._animation.play(this.hitAnimationName);
-      // 要進入無敵狀態(由被擊中動畫來控制無敵時間長度，目前是0.5秒)
-      this._isInvisible = true;
+      this.hit();
     }
+  }
+
+  die() {
+    // 播放被擊毀動畫
+    if (this.destroyAnimationName)
+      this._animation.play(this.destroyAnimationName);
+    // 停用碰撞元件（停止檢測碰撞）
+    this._collider.enabled = false;
+    // 播放音效
+    AudioManager.instance.playSound(SoundClipType.GameOver);
+  }
+
+  hit() {
+    // 播放被擊中動畫
+    if (this.hitAnimationName) this._animation.play(this.hitAnimationName);
+    // 要進入無敵狀態(由被擊中動畫來控制無敵時間長度，目前是0.5秒)
+    this._isInvisible = true;
+    // 播放音效
+    AudioManager.instance.playSound(SoundClipType.Hit);
   }
 
   // 重置玩家狀態(不一定會用到)

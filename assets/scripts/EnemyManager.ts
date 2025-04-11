@@ -1,13 +1,4 @@
-import {
-  _decorator,
-  CCFloat,
-  Component,
-  director,
-  math,
-  Node,
-  Prefab,
-  Vec2
-} from 'cc';
+import { _decorator, CCFloat, Component, math, Node, Prefab } from 'cc';
 import { EnemyPool } from './EnemyPool';
 import { EventManager } from './EventManager';
 import { Enemy } from './Enemy';
@@ -106,6 +97,7 @@ export class EnemyManager extends Component {
   }
 
   killAllEnemy() {
+    // 回收所有敵機
     this.node.children.forEach((childNode: Node) => {
       const enemy = childNode.getComponent(Enemy);
       // 如果是敵機（正常情況這個節點內只有敵機），且子節點是啟用狀態並且在畫面中，就回收敵機

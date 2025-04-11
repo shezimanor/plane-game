@@ -1,11 +1,4 @@
-import {
-  _decorator,
-  CCInteger,
-  CCString,
-  Collider2D,
-  Component,
-  Node
-} from 'cc';
+import { _decorator, CCInteger, CCString, Collider2D, Component } from 'cc';
 import { Player } from './Player';
 import { BulletPool } from './BulletPool';
 const { ccclass, property } = _decorator;

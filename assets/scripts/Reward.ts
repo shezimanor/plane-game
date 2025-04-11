@@ -4,7 +4,6 @@ import {
   CCString,
   Collider2D,
   Component,
-  Node,
   UITransform
 } from 'cc';
 import { RewardManager } from './RewardManager';

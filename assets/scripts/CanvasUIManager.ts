@@ -3,6 +3,7 @@ import {
   Button,
   Component,
   director,
+  EventTouch,
   game,
   Input,
   Label,
@@ -11,6 +12,7 @@ import {
 } from 'cc';
 import { EventManager } from './EventManager';
 import { CanvasGameManager } from './CanvasGameManager';
+import { AudioManager, SoundClipType } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CanvasUIManager')
@@ -20,8 +22,6 @@ export class CanvasUIManager extends Component {
     return CanvasUIManager._instance;
   }
 
-  @property(Node)
-  public bombUI: Node = null;
   @property(Label)
   public bombCountLabel: Label = null;
   @property(Label)
@@ -60,8 +60,6 @@ export class CanvasUIManager extends Component {
       this
     );
     EventManager.eventTarget.on('gameOver', this.showGameOverPanel, this);
-    // 註冊觸擊炸彈事件
-    this.bombUI.on(Input.EventType.TOUCH_START, this.onTouchStartBomb, this);
     // 讀取本地端最高分數 localStorage 存的一定是字串
     let highScore = sys.localStorage.getItem('planeHighScore');
     if (!highScore) {
@@ -87,17 +85,6 @@ export class CanvasUIManager extends Component {
       this
     );
     EventManager.eventTarget.off('gameOver', this.showGameOverPanel, this);
-    // 註銷觸擊炸彈事件
-    this.bombUI.off(Input.EventType.TOUCH_START, this.onTouchStartBomb, this);
-  }
-
-  onTouchStartBomb() {
-    const bombCount = CanvasGameManager.instance.getBombCount();
-    // 使用炸彈
-    if (bombCount > 0) {
-      // 引爆炸彈(兩個偵聽：更新炸彈數、全範圍滅敵機)
-      EventManager.eventTarget.emit('detonateBomb');
-    }
   }
 
   updateBombCount(bombCount: number) {
@@ -127,10 +114,28 @@ export class CanvasUIManager extends Component {
       sys.localStorage.setItem('planeHighScore', `${newScore}`);
       this._highestScore = newScore;
       this.highestScoreLabel.string = `${this._highestScore}`;
+      // 播放音效
+      AudioManager.instance.playSound(SoundClipType.NewHighestScore);
+    }
+  }
+
+  onClickBomb() {
+    const bombCount = CanvasGameManager.instance.getBombCount();
+    // 使用炸彈
+    if (bombCount > 0) {
+      // 引爆炸彈(兩個偵聽：更新炸彈數、全範圍滅敵機)
+      EventManager.eventTarget.emit('detonateBomb');
+      // 播放音效
+      AudioManager.instance.playSound(SoundClipType.UseBomb);
+    } else {
+      // 播放音效
+      AudioManager.instance.playSound(SoundClipType.ButtonClick);
     }
   }
 
   onClickResumeGame() {
+    // 播放音效
+    AudioManager.instance.playSound(SoundClipType.ButtonClick);
     // 按鈕切換
     this.pauseButton.node.active = true;
     this.resumeButton.node.active = false;
@@ -139,6 +144,8 @@ export class CanvasUIManager extends Component {
   }
 
   onClickPauseGame() {
+    // 播放音效
+    AudioManager.instance.playSound(SoundClipType.ButtonClick);
     // 按鈕切換
     this.resumeButton.node.active = true;
     this.pauseButton.node.active = false;
@@ -149,6 +156,7 @@ export class CanvasUIManager extends Component {
   }
 
   onClickRestartGame() {
+    // 切換場景
     director.loadScene('01-start-scene');
     // 重新開始遊戲
     game.resume();

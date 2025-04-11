@@ -9,21 +9,33 @@ import {
   Color,
   Component,
   Contact2DType,
-  Node,
+  Enum,
   Sprite,
   SpriteFrame,
-  UITransform,
-  v3,
-  Vec3
+  UITransform
 } from 'cc';
 import { EnemyManager } from './EnemyManager';
 import { EnemyPool } from './EnemyPool';
 import { Bullet } from './Bullet';
 import { CanvasGameManager } from './CanvasGameManager';
+import { AudioManager, SoundClipType } from './AudioManager';
 const { ccclass, property } = _decorator;
+
+// 敵機類型
+export enum EnemyType {
+  Enemy0,
+  Enemy1,
+  Enemy2
+}
+// 讓屬性裝飾器能看懂 EnemyType, SoundClipType
+Enum(EnemyType);
+Enum(SoundClipType);
 
 @ccclass('Enemy')
 export class Enemy extends Component {
+  // 敵機類型
+  @property({ type: EnemyType })
+  public enemyType: EnemyType = EnemyType.Enemy0;
   // 被擊毀動畫（死亡動畫）
   @property(CCString)
   private destroyAnimationName: string = '';
@@ -45,6 +57,9 @@ export class Enemy extends Component {
   // 分數
   @property(CCInteger)
   public score: number = 100;
+  // 音效類型
+  @property({ type: SoundClipType })
+  public destroySoundType: SoundClipType = SoundClipType.Enemy0Die;
 
   private _enemyManager: EnemyManager = null;
   private _bgHeight: number = 852;
@@ -77,6 +92,7 @@ export class Enemy extends Component {
     }
     // 設定敵機管理器實例
     this._enemyManager = this.node.parent.getComponent(EnemyManager);
+    // 設定擊毀音效
   }
 
   protected onEnable(): void {
@@ -137,8 +153,7 @@ export class Enemy extends Component {
     if (this.hp <= 0) {
       this.die();
     } else {
-      // 播放被擊中動畫
-      if (this.hitAnimationName) this._animation.play(this.hitAnimationName);
+      this.hit();
     }
     // 停用「子彈」的碰撞元件（停止檢測碰撞）
     bullet.collider.enabled = false;
@@ -174,6 +189,13 @@ export class Enemy extends Component {
     if (this._collider) this._collider.enabled = true;
   }
 
+  hit() {
+    // 播放被擊中動畫
+    if (this.hitAnimationName) this._animation.play(this.hitAnimationName);
+    // 播放音效
+    AudioManager.instance.playSound(SoundClipType.Hit, 0.1);
+  }
+
   die() {
     // 播放被擊毀動畫
     if (this.destroyAnimationName)
@@ -182,6 +204,8 @@ export class Enemy extends Component {
     this._collider.enabled = false;
     // 更新分數
     CanvasGameManager.instance.addScore(this.score);
+    // 播放音效
+    AudioManager.instance.playSound(this.destroySoundType);
   }
 
   kill() {

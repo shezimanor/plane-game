@@ -1,5 +1,4 @@
 import { Prefab, Node, instantiate } from 'cc';
-import { Enemy } from './Enemy';
 
 export class EnemyPool {
   // 這個 pool 只收已經停用的敵機
