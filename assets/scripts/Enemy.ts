@@ -18,15 +18,10 @@ import { EnemyManager } from './EnemyManager';
 import { EnemyPool } from './EnemyPool';
 import { Bullet } from './Bullet';
 import { CanvasGameManager } from './CanvasGameManager';
-import { AudioManager, SoundClipType } from './AudioManager';
+import { AudioManager } from './AudioManager';
+import { EnemyType, SoundClipType } from './types/enums';
 const { ccclass, property } = _decorator;
 
-// 敵機類型
-export enum EnemyType {
-  Enemy0,
-  Enemy1,
-  Enemy2
-}
 // 讓屬性裝飾器能看懂 EnemyType, SoundClipType
 Enum(EnemyType);
 Enum(SoundClipType);

@@ -1,23 +1,6 @@
 import { _decorator, AudioClip, AudioSource, Component } from 'cc';
+import { MusicClipType, SoundClipType } from './types/enums';
 const { ccclass, property } = _decorator;
-
-export enum MusicClipType {
-  Bgm
-}
-
-export enum SoundClipType {
-  Enemy0Die, // 0
-  Enemy1Die, // 1
-  Enemy2Die, // 2
-  Bullet, // 3
-  GetBomb, // 4
-  GetDouble, // 5
-  UseBomb, // 6
-  Hit, // 7
-  GameOver, // 8
-  ButtonClick, // 9
-  NewHighestScore // 10
-}
 
 @ccclass('AudioManager')
 export class AudioManager extends Component {

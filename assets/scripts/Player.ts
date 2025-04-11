@@ -23,18 +23,13 @@ import {
   Vec3
 } from 'cc';
 import { BulletPool } from './BulletPool';
-import { Bullet } from './Bullet';
 import { Enemy } from './Enemy';
 import { Reward } from './Reward';
 import { CanvasGameManager } from './CanvasGameManager';
 import { EventManager } from './EventManager';
-import { AudioManager, SoundClipType } from './AudioManager';
+import { AudioManager } from './AudioManager';
+import { BulletPoolName, ShootType, SoundClipType } from './types/enums';
 const { ccclass, property } = _decorator;
-
-enum ShootType {
-  OneShoot,
-  TwoShoot
-}
 
 @ccclass('Player')
 export class Player extends Component {
@@ -119,10 +114,11 @@ export class Player extends Component {
     this.bulletPool_two = new BulletPool(this.bullet02Prefab, 'bulletPool_two');
     // 設定觸控事件
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+    // 事件訂閱(Bullet.ts發布)
+    EventManager.eventTarget.on('stopBullet', this.stopBullet, this);
   }
 
   protected onEnable(): void {
-    console.log('Player onEnable');
     this.reset();
   }
 
@@ -177,6 +173,8 @@ export class Player extends Component {
         this
       );
     }
+    // 註銷事件訂閱
+    EventManager.eventTarget.off('stopBullet', this.stopBullet, this);
   }
 
   onTouchMove(event: EventTouch) {
@@ -191,10 +189,11 @@ export class Player extends Component {
 
   oneShoot() {
     const bullet = this.bulletPool_one.getBullet();
+    const bulletInstance = this.bulletPool_one.getBulletComponent(bullet);
     // 設定位置
     bullet.setPosition(this.bullet01InitVec3);
     // 設定子彈的初始 x 座標，因為飛機會動，但子彈的 x 是固定的。
-    bullet.getComponent(Bullet).setInitWorldPositionX();
+    bulletInstance.setInitWorldPositionX();
     // 設定父節點
     bullet.setParent(this.bulletParent);
     // 子彈音效
@@ -204,12 +203,16 @@ export class Player extends Component {
   twoShoot() {
     const bulletLeft = this.bulletPool_two.getBullet();
     const bulletRight = this.bulletPool_two.getBullet();
+    const bulletLeftInstance =
+      this.bulletPool_two.getBulletComponent(bulletLeft);
+    const bulletRightInstance =
+      this.bulletPool_two.getBulletComponent(bulletRight);
     // 設定位置
     bulletLeft.setPosition(this.bullet02LeftInitVec3);
     bulletRight.setPosition(this.bullet02RightInitVec3);
     // 設定子彈的初始 x 座標，因為飛機會動，但子彈的 x 是固定的。
-    bulletLeft.getComponent(Bullet).setInitWorldPositionX();
-    bulletRight.getComponent(Bullet).setInitWorldPositionX();
+    bulletLeftInstance.setInitWorldPositionX();
+    bulletRightInstance.setInitWorldPositionX();
     // 設定父節點
     bulletLeft.setParent(this.bulletParent);
     bulletRight.setParent(this.bulletParent);
@@ -325,5 +328,26 @@ export class Player extends Component {
     }
     // 啟用檢測元件
     if (this._collider) this._collider.enabled = true;
+  }
+
+  stopBullet(bullet: Node, poolName: BulletPoolName) {
+    switch (poolName) {
+      case BulletPoolName.bulletPool_one:
+        if (this.bulletPool_one) {
+          this.bulletPool_one.recycleBullet(bullet);
+        } else {
+          console.error('BulletPool not found');
+          bullet.destroy();
+        }
+        break;
+      case BulletPoolName.bulletPool_two:
+        if (this.bulletPool_two) {
+          this.bulletPool_two.recycleBullet(bullet);
+        } else {
+          console.error('BulletPool not found');
+          bullet.destroy();
+        }
+        break;
+    }
   }
 }

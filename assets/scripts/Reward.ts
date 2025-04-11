@@ -8,12 +8,8 @@ import {
 } from 'cc';
 import { RewardManager } from './RewardManager';
 import { RewardPool } from './RewardPool';
+import { RewardType } from './types/enums';
 const { ccclass, property } = _decorator;
-
-export enum ShootType {
-  TwoShoot = 1,
-  BigBomb = 2
-}
 
 @ccclass('Reward')
 export class Reward extends Component {
@@ -25,7 +21,7 @@ export class Reward extends Component {
   public speed: number = 200;
   // 獎品項目: 1, 2
   @property(CCInteger)
-  public rewardType: ShootType = ShootType.TwoShoot;
+  public rewardType: RewardType = RewardType.TwoShoot;
 
   // 碰撞器會被玩家讀取
   public collider: Collider2D = null;

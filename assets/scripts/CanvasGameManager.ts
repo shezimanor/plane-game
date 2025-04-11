@@ -1,6 +1,7 @@
 import { _decorator, CCInteger, Component } from 'cc';
 import { EventManager } from './EventManager';
-import { AudioManager, MusicClipType } from './AudioManager';
+import { AudioManager } from './AudioManager';
+import { MusicClipType } from './types/enums';
 const { ccclass, property } = _decorator;
 
 @ccclass('CanvasGameManager')

@@ -12,7 +12,8 @@ import {
 } from 'cc';
 import { EventManager } from './EventManager';
 import { CanvasGameManager } from './CanvasGameManager';
-import { AudioManager, SoundClipType } from './AudioManager';
+import { AudioManager } from './AudioManager';
+import { SoundClipType } from './types/enums';
 const { ccclass, property } = _decorator;
 
 @ccclass('CanvasUIManager')

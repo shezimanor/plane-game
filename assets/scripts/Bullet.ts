@@ -1,12 +1,21 @@
-import { _decorator, CCInteger, CCString, Collider2D, Component } from 'cc';
-import { Player } from './Player';
-import { BulletPool } from './BulletPool';
+import {
+  _decorator,
+  CCInteger,
+  CCString,
+  Collider2D,
+  Component,
+  Enum
+} from 'cc';
+import { EventManager } from './EventManager';
+import { BulletPoolName } from './types/enums';
 const { ccclass, property } = _decorator;
+
+Enum(BulletPoolName);
 @ccclass('Bullet')
 export class Bullet extends Component {
   // 物件池名稱
-  @property(CCString)
-  public poolName: string = '';
+  @property({ type: BulletPoolName })
+  public poolName: BulletPoolName = BulletPoolName.bulletPool_one;
   // 速度
   @property(CCInteger)
   public speed: number = 500;
@@ -17,14 +26,11 @@ export class Bullet extends Component {
   public collider: Collider2D = null;
   private _initWorldPositionX: number = 0;
   private _worldPositionY: number = 0;
-  private _player: Player = null;
   private _bgHeight: number = 852;
 
   protected onLoad(): void {
     this._initWorldPositionX = this.node.worldPosition.x;
     this._worldPositionY = this.node.worldPosition.y;
-    // 設定玩家實例
-    this._player = this.node.parent.parent.getComponent(Player);
     // 設定碰撞元件
     this.collider = this.getComponent(Collider2D);
   }
@@ -54,13 +60,10 @@ export class Bullet extends Component {
     this._worldPositionY = this.node.worldPosition.y;
   }
 
+  // 終止子彈行為
   stopAction() {
-    if (this._player && this._player[this.poolName] instanceof BulletPool) {
-      this._player[this.poolName].recycleBullet(this.node);
-    } else {
-      console.error('BulletPool not found');
-      this.node.destroy();
-    }
+    // 事件發布(Player.ts 訂閱)
+    EventManager.eventTarget.emit('stopBullet', this.node, this.poolName);
   }
 
   reset() {

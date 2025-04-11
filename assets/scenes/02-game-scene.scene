@@ -351,7 +351,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 240.00000000000003,
+      "x": 240,
       "y": 425,
       "z": 0
     },
@@ -593,7 +593,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 480.00000000000006,
+      "width": 480,
       "height": 850
     },
     "_anchorPoint": {
@@ -735,7 +735,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 480.00000000000006,
+      "width": 480,
       "height": 850
     },
     "_anchorPoint": {
@@ -877,7 +877,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 480.00000000000006,
+      "width": 480,
       "height": 850
     },
     "_anchorPoint": {
@@ -968,7 +968,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 480.00000000000006,
+      "width": 480,
       "height": 850
     },
     "_anchorPoint": {
@@ -1450,7 +1450,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 480.00000000000006,
+      "width": 480,
       "height": 850
     },
     "_anchorPoint": {
@@ -1566,7 +1566,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 240.00000000000003,
+      "x": 240,
       "y": 425,
       "z": 0
     },
@@ -1718,7 +1718,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -170.00000000000003,
+      "x": -170,
       "y": -388.5,
       "z": 0
     },
@@ -2303,7 +2303,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 193.00000000000003,
+      "x": 193,
       "y": 396,
       "z": 0
     },
@@ -2811,7 +2811,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -180.00000000000003,
+      "x": -180,
       "y": 392.84,
       "z": 0
     },
@@ -2980,7 +2980,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -206.50000000000003,
+      "x": -206.5,
       "y": 391.5,
       "z": 0
     },
@@ -4142,7 +4142,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 480.00000000000006,
+      "width": 480,
       "height": 850
     },
     "_anchorPoint": {
