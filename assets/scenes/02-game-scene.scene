@@ -1187,7 +1187,7 @@
       "__uuid__": "d528ad13-a956-431e-8f5a-ab9635e04872",
       "__expectedType__": "cc.Prefab"
     },
-    "reward01SpawnRate": 8,
+    "reward01SpawnRate": 6,
     "reward02SpawnRate": 18,
     "_id": "a1V7S/RjpKvKXHVswmPMZr"
   },
